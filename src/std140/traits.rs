@@ -158,3 +158,30 @@ where
         writer.len()
     }
 }
+
+///
+pub trait StaticStd140Size {
+    /// Returns the size of the `std140` version of this type. Useful for
+    /// pre-sizing buffers.
+    fn std140_size_static() -> usize;
+}
+
+impl<T> StaticStd140Size for T
+where
+    T: AsStd140,
+{
+    /// Returns the size of the `std140` version of this type. Useful for
+    /// pre-sizing buffers.
+    fn std140_size_static() -> usize {
+        size_of::<T::Std140Type>()
+    }
+}
+
+impl<T> StaticStd140Size for [T]
+where
+    T: AsStd140,
+{
+    fn std140_size_static() -> usize {
+        T::std140_size_static()
+    }
+}
